@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A083502A2D66440E009A57E7 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A08350402D66440F009A57E7 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A083504A2D66440F009A57E7 /* ImageFeedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A083502A2D66440E009A57E7 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = ImageFeed.app; path = "/Users/purplejunng/Desktop/ImageFeed/ImageFeed/build/Debug-iphoneos/ImageFeed.app"; sourceTree = "<absolute>"; };
+		A08350402D66440F009A57E7 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = ImageFeedTests.xctest; path = "/Users/purplejunng/Desktop/ImageFeed/ImageFeed/build/Debug-iphoneos/ImageFeed.app/PlugIns/ImageFeedTests.xctest"; sourceTree = "<absolute>"; };
+		A083504A2D66440F009A57E7 /* ImageFeedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = ImageFeedUITests.xctest; path = "/Users/purplejunng/Desktop/ImageFeed/ImageFeed/build/Debug-iphoneos/ImageFeedUITests-Runner.app/PlugIns/ImageFeedUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,16 +46,6 @@
 				A08350522D66440F009A57E7 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */,
 			);
 			path = ImageFeed;
-			sourceTree = "<group>";
-		};
-		A08350432D66440F009A57E7 /* ImageFeedTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ImageFeedTests;
-			sourceTree = "<group>";
-		};
-		A083504D2D66440F009A57E7 /* ImageFeedUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ImageFeedUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -89,18 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				A083502C2D66440E009A57E7 /* ImageFeed */,
-				A083502B2D66440E009A57E7 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		A083502B2D66440E009A57E7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A083502A2D66440E009A57E7 /* ImageFeed.app */,
-				A08350402D66440F009A57E7 /* ImageFeedTests.xctest */,
-				A083504A2D66440F009A57E7 /* ImageFeedUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,7 +180,7 @@
 			mainGroup = A08350212D66440E009A57E7;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = A083502B2D66440E009A57E7 /* Products */;
+			productRefGroup = A08350212D66440E009A57E7;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
