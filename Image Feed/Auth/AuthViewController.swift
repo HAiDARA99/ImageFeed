@@ -1,4 +1,5 @@
 import UIKit
+import ProgressHUD
 
 protocol AuthViewControllerDelegate: AnyObject {
     func authViewController(_ vc: AuthViewController, didAuthenticatedWithCode code: String)
@@ -7,20 +8,19 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     private let showWebViewSegueIdentifier = "ShowWebView"
+    private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
+    private let oauthService = OAuth2Service()
     
     weak var delegate: AuthViewControllerDelegate?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureBackButton()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showWebViewSegueIdentifier {
-            guard
-                let webViewViewController = segue.destination as? WebViewViewController
-            else {
+            guard let webViewViewController = segue.destination as? WebViewViewController else {
                 assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
                 return
             }
@@ -36,17 +36,39 @@ final class AuthViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = .black
     }
+    
+    private func showErrorAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        delegate?.authViewController(self, didAuthenticatedWithCode: code)
+        navigationController?.popViewController(animated: true)
+        UIBlockingProgressHUD.show()
+        
+        oauthService.fetchOAuthToken(code: code) { [weak self] result in
+            guard let self else { return }
+            
+            UIBlockingProgressHUD.dismiss()
+            
+            switch result {
+            case .success:
+                delegate?.didAuthenticate(self)
+            case .failure:
+                showErrorAlert()
+//                performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+                //                break
+            }
+        }
     }
-
+    
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
     }
 }
-
-
-

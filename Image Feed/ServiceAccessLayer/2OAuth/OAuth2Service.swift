@@ -1,5 +1,9 @@
 import UIKit
 
+enum AuthServiceError: Error {
+    case invalidRequest
+}
+
 struct OAuthTokenResponseBody: Decodable {
     let accessToken: String
     let tokenType: String
@@ -15,50 +19,65 @@ struct OAuthTokenResponseBody: Decodable {
 }
 
 final class OAuth2Service {
-    static let shared = OAuth2Service()
-    private init() {}
-    
-    func makeOAuthTokenRequest(code: String) -> URLRequest? {
-        let baseURL = URL(string: "https://unsplash.com")!
-        let url = URL(
-            string: "/oauth/token/"
-            + "?client_id=\(Constants.accessKey)"
-            + "&&client_secret=\(Constants.secretKey)"
-            + "&&redirect_uri=\(Constants.redirectURI)"
-            + "&&code=\(code)"
-            + "&&grant_type=authorization_code",
-            relativeTo: baseURL
-        )!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        return request
-    }
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
     
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        
+        if let currentTask = task {
+            if lastCode == code {
+                completion(.failure(AuthServiceError.invalidRequest))
+                return
+            } else {
+                currentTask.cancel()
+            }
+        } else if lastCode == code {
+            completion(.failure(AuthServiceError.invalidRequest))
+        }
+        
+        lastCode = code
+        
         guard let request = makeOAuthTokenRequest(code: code) else {
-            completion(.failure(NetworkError.urlRequestError(URLError(.badURL))))
+            completion(.failure(AuthServiceError.invalidRequest))
+            lastCode = nil
             return
         }
         
-        let task = URLSession.shared.data(for: request) { result in
+        let newTask = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            guard let self = self else { return }
             switch result {
-            case .success(let data):
-                do {
-                    let decoder = JSONDecoder()
-                    let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                    
-                    OAuth2TokenStorage.shared.token = response.accessToken
-                    
-                    completion(.success(response.accessToken))
-                } catch {
-                    print("Ошибка декодирования: \(error)")
-                    completion(.failure(error))
-                }
+            case .success(let response):
+                OAuth2TokenStorage.shared.token = response.accessToken
+                completion(.success(response.accessToken))
             case .failure(let error):
-                print("Сетевая ошибка: \(error)")
+                print("[OAuth2Service.fetchOAuthToken]: NetworkError - ошибка для кода \(code): \(error.localizedDescription)")
                 completion(.failure(error))
             }
+            self.task = nil
+            self.lastCode = nil
         }
-        task.resume()
+        
+        task = newTask
+        newTask.resume()
+    }
+    
+    func makeOAuthTokenRequest(code: String) -> URLRequest? {
+        guard let baseURL = URL(string: "https://unsplash.com"),
+              let url = URL(
+                string: "/oauth/token/"
+                + "?client_id=\(Constants.accessKey)"
+                + "&client_secret=\(Constants.secretKey)"
+                + "&redirect_uri=\(Constants.redirectURI)"
+                + "&code=\(code)"
+                + "&grant_type=authorization_code",
+                relativeTo: baseURL
+              ) else {
+            return nil
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        return request
     }
 }
