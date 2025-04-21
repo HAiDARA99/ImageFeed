@@ -241,7 +241,7 @@
         <!--Auth -->
         <scene sceneID="E2S-8A-oqy">
             <objects>
-                <viewController storyboardIdentifier="AuthViewController" id="POj-jl-GyV" userLabel="Auth " customClass="AuthViewController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AuthViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="POj-jl-GyV" userLabel="Auth " customClass="AuthViewController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Dcl-cx-1to">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

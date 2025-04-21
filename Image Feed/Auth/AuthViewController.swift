@@ -62,8 +62,6 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 delegate?.didAuthenticate(self)
             case .failure:
                 showErrorAlert()
-//                performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
-                //                break
             }
         }
     }

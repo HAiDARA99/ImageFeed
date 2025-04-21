@@ -12,6 +12,8 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        view.backgroundColor = IFbackgroundColor
         
         setupProfileImage()
         setupNameLabel()
@@ -65,9 +67,13 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupProfileImage() {
-        let profileImage = UIImage(named: "avatar")
+        let profileImage = UIImage(named: "userAvatar")
         let avatarImageView = UIImageView(image: profileImage)
         avatarImageView.contentMode = .scaleAspectFit
+        avatarImageView.clipsToBounds = true
+        avatarImageView.layer.cornerRadius = 35
+        avatarImageView.layer.masksToBounds = true
+        
         self.avatarImageView = avatarImageView
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(avatarImageView)
@@ -82,7 +88,7 @@ final class ProfileViewController: UIViewController {
     
     private func setupNameLabel() {
         let nameLabel = UILabel()
-        nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = ""
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .systemFont(ofSize: 23, weight: .semibold)
         nameLabel.textColor = .white
@@ -98,7 +104,7 @@ final class ProfileViewController: UIViewController {
     
     private func setupLoginNameLabel() {
         let loginNameLabel = UILabel()
-        loginNameLabel.text = "@ekaterina_nov"
+        loginNameLabel.text = ""
         loginNameLabel.translatesAutoresizingMaskIntoConstraints = false
         loginNameLabel.font = .systemFont(ofSize: 13)
         loginNameLabel.textColor = .gray
@@ -114,7 +120,7 @@ final class ProfileViewController: UIViewController {
     
     private func setupDescriptionLabel() {
         let descriptionLabel = UILabel()
-        descriptionLabel.text = "Hello, world!"
+        descriptionLabel.text = ""
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.font = .systemFont(ofSize: 13)
         descriptionLabel.textColor = .white

@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     var image: UIImage? {
@@ -9,21 +10,39 @@ final class SingleImageViewController: UIViewController {
             rescaleAndCenterImageInScrollView(image: image)
         }
     }
-
+    
+    var imageURL: URL?
+    
     @IBOutlet private var scrollView: UIScrollView!
     @IBOutlet private var imageView: UIImageView!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
-
-        guard let image else { return }
-        imageView.image = image
-        imageView.frame.size = image.size
-        rescaleAndCenterImageInScrollView(image: image)
+        
+        if let image {
+            imageView.image = image
+            imageView.frame.size = image.size
+            rescaleAndCenterImageInScrollView(image: image)
+        } else if let url = imageURL {
+            KingfisherManager.shared.retrieveImage(with: url) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let imageResult):
+                        self.imageView.image = imageResult.image
+                        self.imageView.frame.size = imageResult.image.size
+                        self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                    case .failure(let error):
+                        print("[SingleImageViewController]: Ошибка загрузки изображения: \(error.localizedDescription)")
+                        self.imageView.image = UIImage(named: "userAvatar")
+                    }
+                }
+            }
+        }
     }
-
+    
     @IBAction private func didTapBackButton() {
         dismiss(animated: true, completion: nil)
     }

@@ -57,10 +57,24 @@ final class SplashViewController: UIViewController {
             showAuthViewController()
         }
     }
+//    private func showAuthViewController() {
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        guard let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
+//            print("[SplashViewController]: Не удалось создать AuthViewController")
+//            return
+//        }
+//        
+//        authViewController.delegate = self
+//        authViewController.modalPresentationStyle = .fullScreen
+//        present(authViewController, animated: true, completion: nil)
+//    }
     
     private func showAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let navigationController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? UINavigationController,
+        let controller = storyboard.instantiateViewController(withIdentifier: "AuthViewController")
+        print("Загруженный контроллер: \(type(of: controller))")
+        
+        guard let navigationController = controller as? UINavigationController,
               let authViewController = navigationController.viewControllers.first as? AuthViewController else {
             print("[SplashViewController]: Не удалось создать AuthViewController")
             return
@@ -70,6 +84,18 @@ final class SplashViewController: UIViewController {
         authViewController.modalPresentationStyle = .fullScreen
         present(authViewController, animated: true, completion: nil)
     }
+//    private func showAuthViewController() {
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        guard let navigationController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? UINavigationController,
+//              let authViewController = navigationController.viewControllers.first as? AuthViewController else {
+//            print("[SplashViewController]: Не удалось создать AuthViewController")
+//            return
+//        }
+//        
+//        authViewController.delegate = self
+//        authViewController.modalPresentationStyle = .fullScreen
+//        present(authViewController, animated: true, completion: nil)
+//    }
     
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
@@ -104,20 +130,6 @@ final class SplashViewController: UIViewController {
         }
     }
 }
-//
-//extension SplashViewController {
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == ShowAuthenticationScreenSegueIdentifier {
-//            guard
-//                let navigationController = segue.destination as? UINavigationController,
-//                let viewController = navigationController.viewControllers[0] as? AuthViewController
-//            else { fatalError("Failed to prepare for \(ShowAuthenticationScreenSegueIdentifier)") }
-//            viewController.delegate = self
-//        } else {
-//            super.prepare(for: segue, sender: sender)
-//        }
-//    }
-//}
 
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
