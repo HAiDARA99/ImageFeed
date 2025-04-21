@@ -2,11 +2,8 @@ import UIKit
 import Kingfisher
 
 final class ImagesListViewController: UIViewController {
-    private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    
     @IBOutlet private var tableView: UITableView!
     
-    //    private let photosName = Array(0..<20).map { $0.description }
     private let imageListService = ImagesListService.shared
     private var notificationObserver: NSObjectProtocol?
     
@@ -21,6 +18,8 @@ final class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
@@ -36,27 +35,27 @@ final class ImagesListViewController: UIViewController {
         imageListService.fetchPhotosNextPage()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showSingleImageSegueIdentifier {
-            guard
-                let viewController = segue.destination as? SingleImageViewController,
-                let indexPath = sender as? IndexPath
-            else {
-                assertionFailure("Invalid segue destination")
-                return
-            }
-            
-            let photo = imageListService.photos[indexPath.row]
-            guard let url = URL(string: photo.largeImageURL) else {
-                assertionFailure("Invalid Image")
-                return
-            }
-            
-            viewController.imageURL = url
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == showSingleImageSegueIdentifier {
+//            guard
+//                let viewController = segue.destination as? SingleImageViewController,
+//                let indexPath = sender as? IndexPath
+//            else {
+//                assertionFailure("Invalid segue destination")
+//                return
+//            }
+//            
+//            let photo = imageListService.photos[indexPath.row]
+//            guard let url = URL(string: photo.largeImageURL) else {
+//                assertionFailure("Invalid Image")
+//                return
+//            }
+//            
+//            viewController.imageURL = url
+//        } else {
+//            super.prepare(for: segue, sender: sender)
+//        }
+//    }
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -72,6 +71,7 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         configCell(for: imageListCell, with: indexPath)
+        cell.selectionStyle = .none //убери 
         
         return imageListCell
     }
@@ -109,8 +109,7 @@ extension ImagesListViewController {
         } else {
             cell.dateLabel.text = "Дата неизвестна"
         }
-        
-        // Настройка лайка
+
         let likeImage = image.isLiked ? UIImage(resource: .likeButtonOn) : UIImage(resource: .likeButtonOff)
         cell.likeButton.setImage(likeImage, for: .normal)
     }
@@ -118,7 +117,18 @@ extension ImagesListViewController {
 
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let singleImageVC = SingleImageViewController()
+        let photo = imageListService.photos[indexPath.row]
+        guard let url = URL(string: photo.largeImageURL) else {
+            print("Invalid ImageURL")
+            return
+        }
+        singleImageVC.imageURL = url
+        
+        present(singleImageVC, animated: true, completion: nil)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
