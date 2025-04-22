@@ -7,27 +7,63 @@ protocol AuthViewControllerDelegate: AnyObject {
 }
 
 final class AuthViewController: UIViewController {
-    private let showWebViewSegueIdentifier = "ShowWebView"
-    private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     private let oauthService = OAuth2Service()
-    
     weak var delegate: AuthViewControllerDelegate?
+    
+    private let logoImageView = {
+        let logoImageView = UIImageView()
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        logoImageView.image = UIImage(named: "auth_screen_logo")
+        logoImageView.contentMode = .scaleAspectFit
+        return logoImageView
+    }()
+    
+    private let entryButton = {
+        let entryButton = UIButton()
+        entryButton.translatesAutoresizingMaskIntoConstraints = false
+        entryButton.setTitle("Войти", for: .normal)
+        entryButton.setTitleColor(IFbackgroundColor, for: .normal)
+        entryButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        entryButton.contentMode = .scaleToFill
+        entryButton.backgroundColor = .white
+        entryButton.layer.cornerRadius = 16
+        entryButton.layer.masksToBounds = true
+        return entryButton
+    }()
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
         configureBackButton()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showWebViewSegueIdentifier {
-            guard let webViewViewController = segue.destination as? WebViewViewController else {
-                assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
-                return
-            }
-            webViewViewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
+    private func setupUI() {
+        view.backgroundColor = IFbackgroundColor
+        
+        view.addSubview(logoImageView)
+        view.addSubview(entryButton)
+        
+        entryButton.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)
+        NSLayoutConstraint.activate([
+            logoImageView.widthAnchor.constraint(equalToConstant: 60),
+            logoImageView.heightAnchor.constraint(equalToConstant: 60),
+            logoImageView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+            
+            entryButton.heightAnchor.constraint(equalToConstant: 48),
+            entryButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            entryButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            entryButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            entryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 124)
+        ])
     }
     
     private func configureBackButton() {
@@ -44,6 +80,12 @@ final class AuthViewController: UIViewController {
             preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+    
+    @objc private func didTapLoginButton() {
+        let webViewViewController = WebViewViewController()
+        webViewViewController.delegate = self
+        navigationController?.pushViewController(webViewViewController, animated: true)
     }
 }
 
@@ -67,6 +109,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        vc.dismiss(animated: true)
+        //        vc.dismiss(animated: true)
+        navigationController?.popViewController(animated: true)
     }
 }

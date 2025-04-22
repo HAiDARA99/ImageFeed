@@ -23,14 +23,14 @@ final class SingleImageViewController: UIViewController {
         scrollView.backgroundColor = IFbackgroundColor
         return scrollView
     }()
-
+    
     private let imageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-
+    
     private let backButton = {
         let backButton = UIButton()
         backButton.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +38,7 @@ final class SingleImageViewController: UIViewController {
         backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         return backButton
     }()
-
+    
     private let shareButton = {
         let shareButton = UIButton()
         shareButton.translatesAutoresizingMaskIntoConstraints = false
@@ -46,7 +46,7 @@ final class SingleImageViewController: UIViewController {
         shareButton.addTarget(self, action: #selector(didTapShareButton), for: .touchUpInside)
         return shareButton
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -110,7 +110,7 @@ final class SingleImageViewController: UIViewController {
         view.backgroundColor = IFbackgroundColor
         
         view.addSubview(scrollView)
-       scrollView.addSubview(imageView)
+        scrollView.addSubview(imageView)
         view.addSubview(backButton)
         view.addSubview(shareButton)
         

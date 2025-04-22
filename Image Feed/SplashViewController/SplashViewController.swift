@@ -1,8 +1,6 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
-    private let ShowAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
-    
     private let oAuthService = OAuth2Service()
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
@@ -59,19 +57,11 @@ final class SplashViewController: UIViewController {
     }
     
     private func showAuthViewController() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let controller = storyboard.instantiateViewController(withIdentifier: "AuthViewController")
-        print("Загруженный контроллер: \(type(of: controller))")
-        
-        guard let navigationController = controller as? UINavigationController,
-              let authViewController = navigationController.viewControllers.first as? AuthViewController else {
-            print("[SplashViewController]: Не удалось создать AuthViewController")
-            return
-        }
-        
+        let authViewController = AuthViewController()
         authViewController.delegate = self
-        authViewController.modalPresentationStyle = .fullScreen
-        present(authViewController, animated: true, completion: nil)
+        let navigationController = UINavigationController(rootViewController: authViewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true, completion: nil)
     }
     
     private func switchToTabBarController() {
@@ -80,7 +70,6 @@ final class SplashViewController: UIViewController {
         }
         
         let tabBarController = TabBarController()
-        
         tabBarController.tabBar.backgroundColor = IFbackgroundColor
         tabBarController.tabBar.isTranslucent = false
         window.rootViewController = tabBarController
