@@ -57,17 +57,6 @@ final class SplashViewController: UIViewController {
             showAuthViewController()
         }
     }
-//    private func showAuthViewController() {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        guard let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
-//            print("[SplashViewController]: Не удалось создать AuthViewController")
-//            return
-//        }
-//        
-//        authViewController.delegate = self
-//        authViewController.modalPresentationStyle = .fullScreen
-//        present(authViewController, animated: true, completion: nil)
-//    }
     
     private func showAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -84,25 +73,16 @@ final class SplashViewController: UIViewController {
         authViewController.modalPresentationStyle = .fullScreen
         present(authViewController, animated: true, completion: nil)
     }
-//    private func showAuthViewController() {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        guard let navigationController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? UINavigationController,
-//              let authViewController = navigationController.viewControllers.first as? AuthViewController else {
-//            print("[SplashViewController]: Не удалось создать AuthViewController")
-//            return
-//        }
-//        
-//        authViewController.delegate = self
-//        authViewController.modalPresentationStyle = .fullScreen
-//        present(authViewController, animated: true, completion: nil)
-//    }
     
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
             fatalError("Invalid Configuration")
         }
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarController")
+        
+        let tabBarController = TabBarController()
+        
+        tabBarController.tabBar.backgroundColor = IFbackgroundColor
+        tabBarController.tabBar.isTranslucent = false
         window.rootViewController = tabBarController
     }
     
@@ -125,7 +105,7 @@ final class SplashViewController: UIViewController {
                 self.switchToTabBarController()
             case .failure(let error):
                 print("Ошибка загрузки профиля: \(error)")
-                self.performSegue(withIdentifier: self.ShowAuthenticationScreenSegueIdentifier, sender: nil)
+                self.showAuthViewController()
             }
         }
     }
@@ -156,7 +136,7 @@ extension SplashViewController: AuthViewControllerDelegate {
                     guard let token = self.storage.token else { return }
                     self.fetchProfile(token)
                 case .failure:
-                    self.performSegue(withIdentifier: self.ShowAuthenticationScreenSegueIdentifier, sender: nil)
+                    self.showAuthViewController()
                 }
             }
         }

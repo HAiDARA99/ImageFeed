@@ -2,11 +2,8 @@ import UIKit
 import Kingfisher
 
 final class ImagesListViewController: UIViewController {
-    @IBOutlet private var tableView: UITableView!
-    
     private let imageListService = ImagesListService.shared
     private var notificationObserver: NSObjectProtocol?
-    
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -16,46 +13,49 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
+    private let tableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = IFbackgroundColor
+        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        return tableView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.dataSource = self
-        tableView.delegate = self
         
-        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-        
-        notificationObserver = NotificationCenter.default.addObserver(
-            forName: ImagesListService.didChangeNotification,
-            object: nil,
-            queue: .main,
-        ) { [weak self] _ in
-            guard let self = self else { return }
-            self.tableView.reloadData()
-        }
-        
+        setupUI()
+        setupObservers()
         imageListService.fetchPhotosNextPage()
     }
     
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == showSingleImageSegueIdentifier {
-//            guard
-//                let viewController = segue.destination as? SingleImageViewController,
-//                let indexPath = sender as? IndexPath
-//            else {
-//                assertionFailure("Invalid segue destination")
-//                return
-//            }
-//            
-//            let photo = imageListService.photos[indexPath.row]
-//            guard let url = URL(string: photo.largeImageURL) else {
-//                assertionFailure("Invalid Image")
-//                return
-//            }
-//            
-//            viewController.imageURL = url
-//        } else {
-//            super.prepare(for: segue, sender: sender)
-//        }
-//    }
+    private func setupUI() {
+        view.backgroundColor = IFbackgroundColor
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
+    
+    private func setupObservers() {
+        notificationObserver = NotificationCenter.default.addObserver(
+            forName: ImagesListService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            self.tableView.reloadData()
+            UIBlockingProgressHUD.dismiss()
+        }
+    }
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -64,16 +64,12 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
-        
-        guard let imageListCell = cell as? ImagesListCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as? ImagesListCell else {
             return UITableViewCell()
         }
         
-        configCell(for: imageListCell, with: indexPath)
-        cell.selectionStyle = .none //убери 
-        
-        return imageListCell
+        configCell(for: cell, with: indexPath)
+        return cell
     }
 }
 
@@ -109,7 +105,7 @@ extension ImagesListViewController {
         } else {
             cell.dateLabel.text = "Дата неизвестна"
         }
-
+        
         let likeImage = image.isLiked ? UIImage(resource: .likeButtonOn) : UIImage(resource: .likeButtonOff)
         cell.likeButton.setImage(likeImage, for: .normal)
     }
@@ -128,7 +124,6 @@ extension ImagesListViewController: UITableViewDelegate {
         singleImageVC.imageURL = url
         
         present(singleImageVC, animated: true, completion: nil)
-        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
