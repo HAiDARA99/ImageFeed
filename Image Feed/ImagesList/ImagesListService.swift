@@ -9,7 +9,7 @@ struct Photo {
     let welcomeDescription: String?
     let thumbImageURL: String
     let largeImageURL: String
-    let isLiked: Bool
+    var isLiked: Bool
 }
 
 struct PhotoResult: Codable {
@@ -36,6 +36,10 @@ struct UrlsResult: Codable {
     let thumb: String
 }
 
+struct LikePhotoResponse: Codable {
+    let photo: PhotoResult
+}
+
 final class ImagesListService {
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     static let shared = ImagesListService()
@@ -46,6 +50,56 @@ final class ImagesListService {
     
     private var lastLoadedPage: Int?
     private init() {}
+    
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        task?.cancel()
+        
+        guard let token = OAuth2TokenStorage.shared.token else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        guard let url = URL(string: "https://api.unsplash.com/photos/\(photoId)/like") else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = isLike ? "POST" : "DELETE"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let newTask = urlSession.objectTask(for: request) { [weak self] (result: Result<LikePhotoResponse, Error>) in
+            guard let self else { return }
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                        let photo = self.photos[index]
+                        let newPhoto = Photo(
+                            id: photo.id,
+                            size: photo.size,
+                            createdAt: photo.createdAt,
+                            welcomeDescription: photo.welcomeDescription,
+                            thumbImageURL: photo.thumbImageURL,
+                            largeImageURL: photo.largeImageURL,
+                            isLiked: response.photo.likedByUser
+                        )
+                        self.photos[index] = newPhoto
+                    }
+                    completion(.success(()))
+                    NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: nil)
+                }
+            case .failure(let error):
+                print("[ImagesListService.changeLike]: NetworkError - ошибка для photoId \(photoId): \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+            self.task = nil
+        }
+        
+        task = newTask
+        newTask.resume()
+    }
+    
     
     func makePhotosRequest(page: Int, perPage: Int, token: String) -> URLRequest? {
         var urlComponents = URLComponents(url: Constants.defaultBaseURL.appendingPathComponent("photos"), resolvingAgainstBaseURL: true)
@@ -118,4 +172,12 @@ final class ImagesListService {
         self.task = task
         task.resume()
     }
+    
+    func cleanImageList() {
+        photos = []
+        lastLoadedPage = nil
+        task?.cancel()
+        task = nil
+    }
 }
+

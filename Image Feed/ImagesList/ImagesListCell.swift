@@ -1,8 +1,14 @@
 import UIKit
 import Kingfisher
 
+protocol ImageListCellDelegate: AnyObject {
+    func imageListCellDidTapLike(_ cell: ImagesListCell)
+}
+
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
+    
+    weak var delegate: ImageListCellDelegate?
     
     let cellImage = {
         let imageView = UIImageView()
@@ -44,6 +50,8 @@ final class ImagesListCell: UITableViewCell {
         contentView.addSubview(dateLabel)
         contentView.addSubview(likeButton)
         
+        likeButton.addTarget(self, action: #selector(likeButtonClicked), for: .touchUpInside)
+        
         NSLayoutConstraint.activate([
             cellImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             cellImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -60,6 +68,15 @@ final class ImagesListCell: UITableViewCell {
             likeButton.topAnchor.constraint(equalTo: cellImage.topAnchor),
             likeButton.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor)
         ])
+    }
+    
+    @objc private func likeButtonClicked() {
+        delegate?.imageListCellDidTapLike(self)
+    }
+    
+    func setIsLiked(_ isLiked: Bool) {
+        let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+        likeButton.setImage(likeImage, for: .normal)
     }
     
     override func prepareForReuse() {

@@ -19,6 +19,7 @@
 		A030DA172D808B9B0041301B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A030DA162D808B900041301B /* Constants.swift */; };
 		A030DA192D80DB9C0041301B /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A030DA182D80DB950041301B /* AuthViewController.swift */; };
 		A030DA1C2D81BABF0041301B /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A030DA1B2D81BABB0041301B /* WebViewViewController.swift */; };
+		A036C4262DC5453700444EF4 /* ProfileLogoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A036C4252DC5452B00444EF4 /* ProfileLogoutService.swift */; };
 		A03DDD1A2D9F33F400E99C8D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A03DDD192D9F33F400E99C8D /* WebKit.framework */; };
 		A04BD51D2DAC857A00612975 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A04BD51C2DAC857A00612975 /* Kingfisher */; };
 		A04BD5202DAD69CD00612975 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = A04BD51F2DAD69CD00612975 /* SwiftKeychainWrapper */; };
@@ -47,6 +48,7 @@
 		A030DA162D808B900041301B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A030DA182D80DB950041301B /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		A030DA1B2D81BABB0041301B /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
+		A036C4252DC5452B00444EF4 /* ProfileLogoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLogoutService.swift; sourceTree = "<group>"; };
 		A03DDD192D9F33F400E99C8D /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		A04BD5212DADA0F000612975 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		A04BD5252DB1C4FC00612975 /* ImagesListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListService.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				A092EAF42DA6EF4800A11277 /* ProfileImageService.swift */,
 				8F83109C28E459BD00BA471F /* ProfileViewController.swift */,
 				A092EAEE2DA5766000A11277 /* ProfileService.swift */,
+				A036C4252DC5452B00444EF4 /* ProfileLogoutService.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				A030DA192D80DB9C0041301B /* AuthViewController.swift in Sources */,
 				8F8310A028E4D0C300BA471F /* SingleImageViewController.swift in Sources */,
 				A092EAF52DA6EF4F00A11277 /* ProfileImageService.swift in Sources */,
+				A036C4262DC5453700444EF4 /* ProfileLogoutService.swift in Sources */,
 				A030DA172D808B9B0041301B /* Constants.swift in Sources */,
 				A030DA1C2D81BABF0041301B /* WebViewViewController.swift in Sources */,
 				A04BD5262DB1C50300612975 /* ImagesListService.swift in Sources */,

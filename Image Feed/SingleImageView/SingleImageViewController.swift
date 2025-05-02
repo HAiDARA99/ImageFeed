@@ -89,7 +89,9 @@ final class SingleImageViewController: UIViewController {
             imageView.frame.size = image.size
             rescaleAndCenterImageInScrollView(image: image)
         } else if let url = imageURL {
+            UIBlockingProgressHUD.show()
             imageView.kf.setImage(with: url) { [weak self] result in
+                UIBlockingProgressHUD.dismiss()
                 guard let self else { return }
                 DispatchQueue.main.async {
                     switch result {

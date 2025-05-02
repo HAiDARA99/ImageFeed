@@ -156,6 +156,20 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func didTapLogoutButton() {
-        print("Кнопка 'Выйти' нажата!")
+        let alert = UIAlertController(
+            title: "Выход",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Да", style: .destructive) {_ in
+            UIBlockingProgressHUD.show()
+            ProfileLogoutService.shared.logout()
+            UIBlockingProgressHUD.dismiss()
+        })
+        
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
+        
+        present(alert, animated: true)
     }
 }
