@@ -100,6 +100,7 @@ extension ImagesListViewController {
             return
         }
         
+        cell.cellImage.kf.indicatorType = .activity
         cell.cellImage.kf.setImage(
             with: url,
             placeholder: UIImage(named: "placeholder"),
