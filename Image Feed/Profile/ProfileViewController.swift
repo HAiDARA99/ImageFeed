@@ -21,7 +21,8 @@ final class ProfileViewController: UIViewController {
         setupDescriptionLabel()
         setupLogoutButton()
         
-        profileImageServiceObserver = NotificationCenter.default
+        profileImageServiceObserver = NotificationCenter
+            .default
             .addObserver(
                 forName: ProfileImageService.didChangeNotification,
                 object: nil,

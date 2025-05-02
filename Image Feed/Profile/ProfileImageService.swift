@@ -23,6 +23,14 @@ final class ProfileImageService {
     
     private init() {}
     
+    private func makeProfileImageRequest(username: String, token: String) -> URLRequest? {
+        guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+    
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         task?.cancel()
         
@@ -43,11 +51,10 @@ final class ProfileImageService {
                 let profileImageURL = userResult.profileImage.large
                 self.avatarURL = profileImageURL
                 completion(.success(profileImageURL))
-                NotificationCenter.default
-                    .post(
-                        name: ProfileImageService.didChangeNotification,
-                        object: self,
-                        userInfo: ["URL": profileImageURL])
+                NotificationCenter.default.post(
+                    name: ProfileImageService.didChangeNotification,
+                    object: self,
+                    userInfo: ["URL": profileImageURL])
             case .failure(let error):
                 print("[ProfileImageService.fetchProfileImageURL]: NetworkError - ошибка для пользователя \(username): \(error.localizedDescription)")
                 completion(.failure(error))
@@ -56,13 +63,5 @@ final class ProfileImageService {
         }
         task = newTask
         newTask.resume()
-    }
-    
-    private func makeProfileImageRequest(username: String, token: String) -> URLRequest? {
-        guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else { return nil }
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
     }
 }

@@ -31,7 +31,7 @@ final class SingleImageViewController: UIViewController {
         return imageView
     }()
     
-    private let backButton = {
+    private lazy var backButton = {
         let backButton = UIButton()
         backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.setImage(UIImage(named: "nav_back_button_white"), for: .normal)
@@ -39,7 +39,7 @@ final class SingleImageViewController: UIViewController {
         return backButton
     }()
     
-    private let shareButton = {
+    private lazy var shareButton = {
         let shareButton = UIButton()
         shareButton.translatesAutoresizingMaskIntoConstraints = false
         shareButton.setImage(UIImage(named: "share_button"), for: .normal)
@@ -58,7 +58,7 @@ final class SingleImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func didTapShareButton(_ sender: UIButton) {
+    @objc private func didTapShareButton(_ sender: UIButton) {
         guard let image = imageView.image else { return }
         let share = UIActivityViewController(
             activityItems: [image],

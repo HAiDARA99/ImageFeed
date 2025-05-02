@@ -47,6 +47,24 @@ final class ImagesListService {
     private var lastLoadedPage: Int?
     private init() {}
     
+    func makePhotosRequest(page: Int, perPage: Int, token: String) -> URLRequest? {
+        var urlComponents = URLComponents(url: Constants.defaultBaseURL.appendingPathComponent("photos"), resolvingAgainstBaseURL: true)
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "page", value: String(page)),
+            URLQueryItem(name: "per_page", value: String(perPage))
+            
+        ]
+        
+        guard let url = urlComponents?.url else {
+            print("[ImagesListService]: Ошибка - не удалось создать URL для запроса")
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
+    }
     
     func fetchPhotosNextPage() {
         guard task == nil else {
@@ -99,24 +117,5 @@ final class ImagesListService {
         
         self.task = task
         task.resume()
-    }
-    
-    func makePhotosRequest(page: Int, perPage: Int, token: String) -> URLRequest? {
-        var urlComponents = URLComponents(url: Constants.defaultBaseURL.appendingPathComponent("photos"), resolvingAgainstBaseURL: true)
-        urlComponents?.queryItems = [
-            URLQueryItem(name: "page", value: String(page)),
-            URLQueryItem(name: "per_page", value: String(perPage))
-            
-        ]
-        
-        guard let url = urlComponents?.url else {
-            print("[ImagesListService]: Ошибка - не удалось создать URL для запроса")
-            return nil
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
     }
 }

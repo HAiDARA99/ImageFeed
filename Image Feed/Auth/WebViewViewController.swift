@@ -11,8 +11,6 @@ protocol WebViewViewControllerDelegate: AnyObject {
 }
 
 final class WebViewViewController: UIViewController {
-//    @IBOutlet private var webView: WKWebView!
-//    @IBOutlet private var progressView: UIProgressView!
     private let webView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false

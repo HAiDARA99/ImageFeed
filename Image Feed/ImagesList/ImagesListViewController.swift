@@ -4,6 +4,7 @@ import Kingfisher
 final class ImagesListViewController: UIViewController {
     private let imageListService = ImagesListService.shared
     private var notificationObserver: NSObjectProtocol?
+    private var photos: [Photo] = []
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -52,8 +53,22 @@ final class ImagesListViewController: UIViewController {
             queue: .main
         ) { [weak self] _ in
             guard let self else { return }
-            self.tableView.reloadData()
+            self.updateTableViewAnimated()
             UIBlockingProgressHUD.dismiss()
+        }
+    }
+    
+    private func updateTableViewAnimated() {
+        let oldCount = photos.count
+        let newCount = imageListService.photos.count
+        
+        photos = imageListService.photos
+        
+        tableView.performBatchUpdates() {
+            let indexPaths = (oldCount..<newCount).map {
+                IndexPath(row: $0, section: 0)
+            }
+            tableView.insertRows(at: indexPaths, with: .automatic)
         }
     }
 }
@@ -64,7 +79,10 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as? ImagesListCell else {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: ImagesListCell.reuseIdentifier,
+            for: indexPath
+        ) as? ImagesListCell else {
             return UITableViewCell()
         }
         

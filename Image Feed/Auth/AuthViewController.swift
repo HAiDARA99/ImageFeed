@@ -31,14 +31,6 @@ final class AuthViewController: UIViewController {
         return entryButton
     }()
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -62,7 +54,7 @@ final class AuthViewController: UIViewController {
             entryButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             entryButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             entryButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            entryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 124)
+            entryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -124)
         ])
     }
     
@@ -75,7 +67,7 @@ final class AuthViewController: UIViewController {
     
     private func showErrorAlert() {
         let alert = UIAlertController(
-            title: "Что-то пошло не так",
+            title: "Что-то пошло не так(",
             message: "Не удалось войти в систему",
             preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -96,9 +88,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         
         oauthService.fetchOAuthToken(code: code) { [weak self] result in
             guard let self else { return }
-            
             UIBlockingProgressHUD.dismiss()
-            
             switch result {
             case .success:
                 delegate?.didAuthenticate(self)
@@ -109,7 +99,6 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        //        vc.dismiss(animated: true)
         navigationController?.popViewController(animated: true)
     }
 }

@@ -28,24 +28,20 @@ final class SplashViewController: UIViewController {
     }
     
     private func setupUI() {
-        let red = CGFloat(0x1A) / 255.0
-        let green = CGFloat(0x1B) / 255.0
-        let blue = CGFloat(0x22) / 255.0
-        view.backgroundColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        view.backgroundColor = IFbackgroundColor
         
-        let splashLogoView = UIImageView()
-        splashLogoView.image = UIImage(named: "splash_screen_logo")
-        splashLogoView.translatesAutoresizingMaskIntoConstraints = false
-        splashLogoView.contentMode = .scaleAspectFit
-        view.addSubview(splashLogoView)
+        splashLogoImageView = UIImageView()
+        splashLogoImageView.image = UIImage(named: "splash_screen_logo")
+        splashLogoImageView.translatesAutoresizingMaskIntoConstraints = false
+        splashLogoImageView.contentMode = .scaleAspectFit
+        view.addSubview(splashLogoImageView)
         
         NSLayoutConstraint.activate([
-            splashLogoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            splashLogoView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            splashLogoView.widthAnchor.constraint(equalToConstant: 74),
-            splashLogoView.heightAnchor.constraint(equalToConstant: 74)
+            splashLogoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            splashLogoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            splashLogoImageView.widthAnchor.constraint(equalToConstant: 74),
+            splashLogoImageView.heightAnchor.constraint(equalToConstant: 74)
         ])
-        
     }
     
     private func checkAuthentication() {
@@ -57,11 +53,14 @@ final class SplashViewController: UIViewController {
     }
     
     private func showAuthViewController() {
-        let authViewController = AuthViewController()
-        authViewController.delegate = self
-        let navigationController = UINavigationController(rootViewController: authViewController)
-        navigationController.modalPresentationStyle = .fullScreen
-        present(navigationController, animated: true, completion: nil)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let authViewController = AuthViewController()
+            authViewController.delegate = self
+            let navigationController = UINavigationController(rootViewController: authViewController)
+            navigationController.modalPresentationStyle = .fullScreen
+            self.present(navigationController, animated: true, completion: nil)
+        }
     }
     
     private func switchToTabBarController() {

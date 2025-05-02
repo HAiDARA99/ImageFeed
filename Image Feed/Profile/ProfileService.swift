@@ -30,6 +30,14 @@ final class ProfileService {
     
     private init() {}
     
+    private func makeProfileRequest(token: String) -> URLRequest? {
+        guard let url = URL(string: "https://api.unsplash.com/me") else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+    
     func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
         task?.cancel()
         
@@ -66,13 +74,5 @@ final class ProfileService {
         
         task = newTask
         newTask.resume()
-    }
-    
-    private func makeProfileRequest(token: String) -> URLRequest? {
-        guard let url = URL(string: "https://api.unsplash.com/me") else { return nil }
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
     }
 }
