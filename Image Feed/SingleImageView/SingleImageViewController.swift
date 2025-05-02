@@ -99,7 +99,7 @@ final class SingleImageViewController: UIViewController {
                         self.rescaleAndCenterImageInScrollView(image: value.image)
                     case .failure(let error):
                         print("[SingleImageViewController]: Ошибка загрузки изображения: \(error.localizedDescription)")
-                        self.imageView.image = UIImage(named: "userAvatar")
+                        self.imageView.image = UIImage(named: "placeholder")
                     }
                 }
             }

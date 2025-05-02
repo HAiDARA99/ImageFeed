@@ -102,7 +102,7 @@ extension ImagesListViewController {
         
         cell.cellImage.kf.setImage(
             with: url,
-            placeholder: UIImage(named: "userAvatar"),
+            placeholder: UIImage(named: "placeholder"),
             options: [.cacheOriginalImage]
         ) { result in
             switch result {
