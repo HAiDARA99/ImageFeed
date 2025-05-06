@@ -8,6 +8,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
         
+        window?.overrideUserInterfaceStyle = .dark
+        
         let splashViewController = SplashViewController()
         window?.rootViewController = splashViewController
         

@@ -32,6 +32,7 @@
 		A092EAED2DA571CD00A11277 /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = A092EAEC2DA571C900A11277 /* UIBlockingProgressHUD.swift */; };
 		A092EAEF2DA5766900A11277 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A092EAEE2DA5766000A11277 /* ProfileService.swift */; };
 		A092EAF52DA6EF4F00A11277 /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A092EAF42DA6EF4800A11277 /* ProfileImageService.swift */; };
+		A0C33FE22DCA676200E6E49C /* WebViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C33FE12DCA675E00E6E49C /* WebViewPresenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 		A092EAEC2DA571C900A11277 /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		A092EAEE2DA5766000A11277 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		A092EAF42DA6EF4800A11277 /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
+		A0C33FE12DCA675E00E6E49C /* WebViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewPresenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +148,7 @@
 		A030DA1A2D80E2890041301B /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				A0C33FE12DCA675E00E6E49C /* WebViewPresenter.swift */,
 				A030DA182D80DB950041301B /* AuthViewController.swift */,
 				A030DA1B2D81BABB0041301B /* WebViewViewController.swift */,
 			);
@@ -271,6 +274,7 @@
 				A0789ACC2D98681400EB551E /* SplashViewController.swift in Sources */,
 				A030DA192D80DB9C0041301B /* AuthViewController.swift in Sources */,
 				8F8310A028E4D0C300BA471F /* SingleImageViewController.swift in Sources */,
+				A0C33FE22DCA676200E6E49C /* WebViewPresenter.swift in Sources */,
 				A092EAF52DA6EF4F00A11277 /* ProfileImageService.swift in Sources */,
 				A036C4262DC5453700444EF4 /* ProfileLogoutService.swift in Sources */,
 				A030DA172D808B9B0041301B /* Constants.swift in Sources */,

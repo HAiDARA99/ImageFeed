@@ -52,14 +52,12 @@ final class ProfileViewController: UIViewController {
         
         view.backgroundColor = IFbackgroundColor
         
-        // Добавление вью в иерархию
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
         view.addSubview(loginNameLabel)
         view.addSubview(descriptionLabel)
         view.addSubview(logoutButton)
         
-        // Настройка констрейнтов
         NSLayoutConstraint.activate([
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             avatarImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
@@ -82,10 +80,8 @@ final class ProfileViewController: UIViewController {
             view.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: logoutButton.trailingAnchor, constant: 16)
         ])
         
-        // Настройка обработчика для кнопки
         logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
         
-        // Настройка наблюдателя
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
             object: nil,
@@ -95,7 +91,6 @@ final class ProfileViewController: UIViewController {
             self.updateAvatar()
         }
         
-        // Инициализация данных
         updateAvatar()
         if let profile = ProfileService.shared.profile {
             updateProfileDetails(profile: profile)
@@ -137,7 +132,7 @@ final class ProfileViewController: UIViewController {
     
     @objc private func didTapLogoutButton() {
         let alert = UIAlertController(
-            title: "Выход",
+            title: "Пока, пока!",
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert
         )
