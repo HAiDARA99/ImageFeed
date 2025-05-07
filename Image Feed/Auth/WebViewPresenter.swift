@@ -1,10 +1,6 @@
 import UIKit
 import WebKit
 
-enum WebViewConstants {
-    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-}
-
 public protocol WebViewPresenterProtocol {
     var view: WebViewViewControllerProtocol? { get set }
     func viewDidLoad()
@@ -14,28 +10,17 @@ public protocol WebViewPresenterProtocol {
 
 final class WebViewPresenter: WebViewPresenterProtocol {
     weak var view: WebViewViewControllerProtocol?
+    var authHelper: AuthHelperProtocol
+    
+    init(authHelper: AuthHelperProtocol) {
+        self.authHelper = authHelper
+    }
     
     func viewDidLoad() {
-        guard var URLComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            view?.setProgessHidden(true)
-            return
-        }
+        guard let request = authHelper.authRequest() else { return }
         
-        URLComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-        
-        guard let url = URLComponents.url else {
-            view?.setProgessHidden(true)
-            return
-        }
-        
-        let request = URLRequest(url: url)
-        didUpdateProgressValue(0)
         view?.load(request: request)
+        didUpdateProgressValue(0)
     }
 
     func didUpdateProgressValue(_ newValue: Double) {
@@ -51,12 +36,6 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
     
     func code(from url: URL) -> String? {
-        guard let urlComponents = URLComponents(string: url.absoluteString),
-              urlComponents.path == "/oauth/authorize/native",
-              let items = urlComponents.queryItems,
-              let codeItem = items.first(where: { $0.name == "code" }) else {
-            return nil
-        }
-        return codeItem.value
+        authHelper.code(from: url)
     }
 }
