@@ -7,19 +7,27 @@ final class TabBarController: UITabBarController {
         applyTabBarAppearance()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        applyTabBarAppearance()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        applyTabBarAppearance()
-    }
+    //    override func viewWillAppear(_ animated: Bool) {
+    //        super.viewWillAppear(animated)
+    //        applyTabBarAppearance()
+    //    }
+    //
+    //    override func viewDidLayoutSubviews() {
+    //        super.viewDidLayoutSubviews()
+    //        applyTabBarAppearance()
+    //    }
     
     private func setupTabBar() {
+        let imageListPresenter = ImagesListPresenter()
         let imagesListViewController = ImagesListViewController()
+        imagesListViewController.presenter = imageListPresenter
+        imageListPresenter.view = imagesListViewController
+        
+        let profileHelper = ProfileHelper()
+        let presenter = ProfilePresenter(profileHelper: profileHelper)
         let profileViewController = ProfileViewController()
+        profileViewController.presenter = presenter
+        presenter.view = profileViewController
         
         imagesListViewController.tabBarItem = UITabBarItem(
             title: "",

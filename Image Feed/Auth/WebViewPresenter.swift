@@ -28,7 +28,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         view?.setProgressValue(newProgressValue)
         
         let shouldHideProgress = shouldHideProgress(for: newProgressValue)
-        view?.setProgessHidden(shouldHideProgress)
+        view?.setProgressHidden(shouldHideProgress)
     }
     
     func shouldHideProgress(for value: Float) -> Bool {

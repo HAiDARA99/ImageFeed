@@ -1,10 +1,13 @@
 import UIKit
 import Kingfisher
 
-final class ImagesListViewController: UIViewController {
+protocol ImageListViewControllerProtocol: AnyObject {
+    func updateTableViewAnimated(oldCount: Int, newCount: Int)
+}
+
+final class ImagesListViewController: UIViewController, ImageListViewControllerProtocol {
     private let imageListService = ImagesListService.shared
-    private var notificationObserver: NSObjectProtocol?
-    private var photos: [Photo] = []
+    var presenter: ImagesListPresenterProtocol?
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -27,7 +30,7 @@ final class ImagesListViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
-        setupObservers()
+        presenter?.viewDidLoad()
         imageListService.fetchPhotosNextPage()
     }
     
@@ -46,31 +49,18 @@ final class ImagesListViewController: UIViewController {
         tableView.dataSource = self
     }
     
-    private func setupObservers() {
-        notificationObserver = NotificationCenter.default.addObserver(
-            forName: ImagesListService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self else { return }
-            self.updateTableViewAnimated()
-            UIBlockingProgressHUD.dismiss()
-        }
-    }
-    
-    private func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imageListService.photos.count
-        
-        photos = imageListService.photos
-        
-        tableView.performBatchUpdates() {
-            let indexPaths = (oldCount..<newCount).map {
-                IndexPath(row: $0, section: 0)
+    func updateTableViewAnimated(oldCount: Int, newCount: Int) {
+            if oldCount == newCount {
+                tableView.reloadData()
+                return
             }
-            tableView.insertRows(at: indexPaths, with: .automatic)
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map {
+                    IndexPath(row: $0, section: 0)
+                }
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            }
         }
-    }
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -165,7 +155,7 @@ extension ImagesListViewController: UITableViewDelegate {
 extension ImagesListViewController: ImageListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let photo = photos[indexPath.row]
+        let photo = imageListService.photos[indexPath.row]
         
         UIBlockingProgressHUD.show()
         
@@ -175,8 +165,7 @@ extension ImagesListViewController: ImageListCellDelegate {
                 UIBlockingProgressHUD.dismiss()
                 switch result {
                 case .success:
-                    self.photos = self.imageListService.photos
-                    cell.setIsLiked(self.photos[indexPath.row].isLiked)
+                    cell.setIsLiked(self.imageListService.photos[indexPath.row].isLiked)
                 case .failure(let error):
                     print("[ImagesListViewController.imageListCellDidTapLike]: Ошибка изменения лайка: \(error.localizedDescription)")
                     let alert = UIAlertController(

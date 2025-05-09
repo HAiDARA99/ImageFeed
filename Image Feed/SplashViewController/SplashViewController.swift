@@ -78,7 +78,7 @@ final class SplashViewController: UIViewController {
         UIBlockingProgressHUD.show()
         profileService.fetchProfile { [weak self] result in
             UIBlockingProgressHUD.dismiss()
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let profile):
                 print("Профиль загружен: \(profile.username)")
@@ -89,8 +89,8 @@ final class SplashViewController: UIViewController {
                     case .failure(let error):
                         print("Ошибка получения URL аватарки: \(error)")
                     }
+                    self.switchToTabBarController()
                 }
-                self.switchToTabBarController()
             case .failure(let error):
                 print("Ошибка загрузки профиля: \(error)")
                 self.showAuthViewController()

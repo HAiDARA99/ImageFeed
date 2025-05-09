@@ -1,8 +1,14 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
-    private var profileImageServiceObserver: NSObjectProtocol?
+protocol ProfileViewControllerProtocol: AnyObject {
+    func updateProfileDetails(profile: Profile)
+    func updateAvatar(image: UIImage?)
+    func showLogoutAlert(title: String, message: String, confirmAction: @escaping () -> Void)
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    var presenter: ProfilePresenterProtocol?
     
     private let avatarImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "userAvatar"))
@@ -50,6 +56,11 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupUI()
+        presenter?.viewDidLoad()
+    }
+    
+    private func setupUI() {
         view.backgroundColor = IFbackgroundColor
         
         view.addSubview(avatarImageView)
@@ -81,68 +92,27 @@ final class ProfileViewController: UIViewController {
         ])
         
         logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
-        
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self else { return }
-            self.updateAvatar()
-        }
-        
-        updateAvatar()
-        if let profile = ProfileService.shared.profile {
-            updateProfileDetails(profile: profile)
-        }
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else {
-            avatarImageView.image = UIImage(named: "userAvatar")
-            return
-        }
-        
-        let processor = RoundCornerImageProcessor(cornerRadius: 35.0)
-        avatarImageView.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "userAvatar"),
-            options: [.processor(processor), .cacheOriginalImage],
-            completionHandler: { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case .success:
-                    print("[ProfileViewController.updateAvatar]: Аватарка успешно загружена")
-                case .failure(let error):
-                    print("[ProfileViewController.updateAvatar]: Ошибка загрузки аватарки: \(error.localizedDescription)")
-                    self.avatarImageView.image = UIImage(named: "userAvatar")
-                }
-            }
-        )
+    @objc func didTapLogoutButton() {
+        presenter?.didTapLogoutButton()
     }
     
-    private func updateProfileDetails(profile: Profile) {
+    func updateProfileDetails(profile: Profile) {
         loginNameLabel.text = profile.loginName
         nameLabel.text = profile.name
         descriptionLabel.text = profile.bio ?? ""
     }
     
-    @objc private func didTapLogoutButton() {
-        let alert = UIAlertController(
-            title: "Пока, пока!",
-            message: "Уверены, что хотите выйти?",
-            preferredStyle: .alert
-        )
-        
+    func updateAvatar(image: UIImage?) {
+        avatarImageView.image = image ?? UIImage(named: "userAvatar")
+    }
+    
+    func showLogoutAlert(title: String, message: String, confirmAction: @escaping () -> Void) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Да", style: .destructive) { _ in
-            UIBlockingProgressHUD.show()
-            ProfileLogoutService.shared.logout()
-            UIBlockingProgressHUD.dismiss()
+            confirmAction()
         })
-        
         alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
         present(alert, animated: true)
     }
