@@ -21,6 +21,7 @@ final class WebViewViewController: UIViewController, WebViewViewControllerProtoc
     private let webView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.accessibilityIdentifier = "UnsplashWebView"
         return webView
     }()
     
@@ -48,16 +49,9 @@ final class WebViewViewController: UIViewController, WebViewViewControllerProtoc
     
     private func setupUI() {
         view.backgroundColor = .white
-        
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Назад",
-            style: .plain,
-            target: self,
-            action: #selector(didTapBackButton)
-        )
-        navigationItem.leftBarButtonItem?.tintColor = .systemBlue
-        
+
         view.addSubview(webView)
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hideKeyboard)))
         view.addSubview(progressView)
         
         NSLayoutConstraint.activate([
@@ -90,8 +84,14 @@ final class WebViewViewController: UIViewController, WebViewViewControllerProtoc
         progressView.progress = newValue
     }
     
-    @objc private func didTapBackButton() {
+    @objc
+    private func didTapBackButton() {
         delegate?.webViewViewControllerDidCancel(self)
+    }
+    
+    @objc
+    private func hideKeyboard() {
+        view.endEditing(true)
     }
 }
 

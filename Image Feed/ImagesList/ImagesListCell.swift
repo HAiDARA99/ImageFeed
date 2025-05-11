@@ -30,6 +30,7 @@ final class ImagesListCell: UITableViewCell {
     let likeButton = {
         let likeButton = UIButton()
         likeButton.translatesAutoresizingMaskIntoConstraints = false
+        likeButton.accessibilityIdentifier = "like button"
         return likeButton
     }()
     

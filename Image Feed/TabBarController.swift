@@ -7,16 +7,6 @@ final class TabBarController: UITabBarController {
         applyTabBarAppearance()
     }
     
-    //    override func viewWillAppear(_ animated: Bool) {
-    //        super.viewWillAppear(animated)
-    //        applyTabBarAppearance()
-    //    }
-    //
-    //    override func viewDidLayoutSubviews() {
-    //        super.viewDidLayoutSubviews()
-    //        applyTabBarAppearance()
-    //    }
-    
     private func setupTabBar() {
         let imageListPresenter = ImagesListPresenter()
         let imagesListViewController = ImagesListViewController()
@@ -40,6 +30,7 @@ final class TabBarController: UITabBarController {
             image: UIImage(named: "tab_profile_active"),
             selectedImage: nil
         )
+        profileViewController.tabBarItem.accessibilityIdentifier = "profileTab"
         
         self.viewControllers = [imagesListViewController, profileViewController]
     }

@@ -28,6 +28,7 @@ final class AuthViewController: UIViewController {
         entryButton.backgroundColor = .white
         entryButton.layer.cornerRadius = 16
         entryButton.layer.masksToBounds = true
+        entryButton.accessibilityIdentifier = "Authenticate"
         return entryButton
     }()
     

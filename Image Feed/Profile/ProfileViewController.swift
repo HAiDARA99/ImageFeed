@@ -50,6 +50,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "logout_button"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.accessibilityIdentifier = "logout button"
         return button
     }()
     
